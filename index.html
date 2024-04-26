@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Pipeline Documentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.5; padding: 1em; }
+        h1, h2, h3 { color: #333; }
+        p, ul { margin-top: 0; }
+        code { background-color: #f4f4f4; padding: 2px 5px; }
+        img { max-width: 100%; height: auto; }
+        
+    </style>
+</head>
+<body>
+    <h1><strong>Machine Learning Pipeline for Loan Risk Prediction</strong></h1>
+        <hr />
+        <strong>Note: </strong> 
+            <ul>
+                <li>Abbreviations:</li>
+                <ul><li>df     - dataframe - representing loan.csv </li>
+                <li>eda/EDA - exploratory data analysis - done in exploratory_data_analysis.ipynb inside src/notebooks/</li></ul>
+
+                </ul>
+            <br />
+            <h2> Please read <strong>ReadMe.md</strong> in the root folder first</h2>
+            <br />
+            <ul> 
+                <li> The ask in the project was to design a pipiline structure. And if possible to provide a Data analysis as per undertanding.</li> 
+                <li> The EDA notebook containes the data analysis with detailed comments as much as possible. </li>
+                <li> The EDA work was done at the begining which helped me in desigining "data_preprocessing steps" which are defined below in later part.</li>
+                <li> I have designed the pipeline and being an open ended problem statement, model performacne can be enhanced based on more detailed study on the dataset. </li>
+            </ul>
+            <hr />
+            <hr />
+    <h2>Introduction</h2>
+    <p>This project is designed to implement a pipleline for a machine learning model which will accept a "csv data file and make prediction on the data and as per accuracy threshold(as of now 95%) model will be saved if achieved accuracy is more than 95%".</p>
+
+    <hr />
+    <hr />
+
+    <h2>Details About the Pipeline</h2>
+    <p>The pipeline automates the entire process of loading data, preprocessing it, training a model, evaluating its performance, and optionally deploying it. 
+        This automation ensures consistency, reduces manual errors, and allows for easy scalability.</p>
+        <h2>Pipeline Diagram</h2>
+            <p>Below is a simple diagram illustrating the flow of operations within the machine learning pipeline:</p>
+            
+            <img src="pipeline_stages.png" alt="Machine Learning Pipeline Stages" width="500" height="300" style="    transform: rotate(-90deg);
+            margin-left: 5em;
+            border: 2px solid #000000;
+            padding: 1em;">
+    <hr />
+    <hr>
+    <h2> Let us read in details about all the scripts inside src/ directory</h2>
+    <h3>Scripts Overview</h3>
+    <ul>
+        <li><strong>base_model.py:</strong>
+            <p>This script was created to test the "lightgbm" model and understand its functionality. It is not used in the pipeline.</p>
+        </li>
+        <li><strong>app.py:</strong>
+            <p>Entry point of the project. It calls the <code>pipeline.py</code> script to initiate the pipeline.</p>
+        </li>
+        <li><strong>src/pipeline.py:</strong>
+            <p>Second entry point handling the pipeline functionality.</p>
+            <ul>
+                <li><strong>Methods:</strong>
+                    <ul>
+                        <li><strong>main:</strong>
+                            <p>Entry point of the pipeline.</p>
+                            <p>Steps:
+                                <ol>
+                                    <li>Load configuration from <code>config.json</code> and environment file parameters.</li>
+                                    <li>Call <code>data_ingestion.py</code> to load the data.</li>
+                                    <li>Call <code>data_preprocessing.py</code> to preprocess the data.</li>
+                                    <li>Call <code>model_training.py</code> to initiate the training process.</li>
+                                    <li>Call <code>model_evaluation.py</code> to evaluate the trained model on new data.</li>
+                                    <li>Decide whether to save the new model based on the evaluation score and save the model to the path provided in the environment file.</li>
+                                    <li>Deploy the model on the production/testing environment.</li>
+                                </ol>
+                            </p>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li><strong>src/data_ingestion.py:</strong>
+            <p>Methods:
+                <ul>
+                    <li><strong>load_data:</strong>
+                        <ul>
+                            <li>Parameters: CSV file path.</li>
+                            <li>Task: Load the CSV file from the path into a pandas DataFrame.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+        </li>
+        <li><strong>src/data_preprocessing.py:</strong>
+            <p>Methods:
+                <ul>
+                    <li><strong>preprocess_data:</strong>
+                        <ul>
+                            <li>Parameters: CSV data as a DataFrame (df), configuration from config.json.</li>
+                            <li>Task: Perform data preprocessing based on the provided configuration.</li>
+                            <li>Returns: Preprocessed DataFrame (df).</li>
+                        </ul>
+                    </li>
+                    <li><strong>split_data:</strong>
+                        <ul>
+                            <li>Parameters: Processed DataFrame (df), configuration from config.json.</li>
+                            <li>Task: Split the DataFrame into train and test datasets.</li>
+                            <li>Returns: X_train, X_test, y_train, y_test.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+        </li>
+        <li><strong>src/model_training:</strong>
+            <p>Methods:
+                <ul>
+                    <li><strong>train_model:</strong>
+                        <ul>
+                            <li>Parameters: X_train (Training data), y_train (Target training data), optional parameters such as params, save_path, and base_model_path.</li>
+                            <li>Task: Train a model using the provided data.</li>
+                            <li>Returns: Trained model.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+        </li>
+        <li><strong>src/model_evaluation.py:</strong>
+            <p>Methods:
+                <ul>
+                    <li><strong>evaluate_model:</strong>
+                        <ul>
+                            <li>Parameters: X_test (Test data), y_test (Test target data), model (Trained model).</li>
+                            <li>Task: Evaluate the trained model on the test data.</li>
+                            <li>Returns: Tuple containing the accuracy and ROC-AUC of the model.</li>
+                        </ul>
+                    </li>
+                    <li><strong>plot_metrics:</strong>
+                        <ul>
+                            <li>Parameters: Predictions and probabilities.</li>
+                            <li>Task: Plot confusion matrix and ROC curve and display them on the web UI.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+        </li>
+        <li><strong>src/model_deployment.py:</strong>
+            <p>Methods:
+                <ul>
+                    <li><strong>deploy_model:</strong>
+                        <ul>
+                            <li>Parameters: None.</li>
+                            <li>Task: Deploy the trained and saved model to the production environment.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
+        </li>
+        <li><strong>src/pipeline.ipynb:</strong>
+            <p>A notebook to run each stage of pipelineblock by block to test beforehand</p>
+        </li>
+    </ul>
+
+    <hr />
+    <hr />
+    <h3>Why I used StreamLit?</h3>
+        <p> 
+            <li>It is a faster way to build UI. Turn data scripts into shareable web apps</li>
+            <li>It is opensource</li>
+            <li>Time constraint on the project task</li>
+            <li>I wanted to try this framework</li>
+            <li><strong>Error faced during instalation:</strong> AxiosError: Request failed with status code 403</li>
+                <ul>
+                    <li>Resolved by following: https://discuss.streamlit.io/t/axioserror-request-failed-with-status-code-403/38112</li>
+                    <li>
+                        <p>Created a new folder called .streamlit and create a “config.toml” file inside it. </p>
+                        <p><strong>Config added: </strong></p>
+                        <p>
+                            <li>[server]</li>
+                            <li>enableXsrfProtection = false</li>
+                            <li>enableCORS = false</li>
+                        </p>
+                    </li>
+                </ul>
+        </p>
+    <hr />
+    <hr />
+    
+    <h2> Future Work or Enhancment that can be done</h2>
+        <p>
+            <ul>
+                <li>
+                    <p>Implementation of custom logging system which can log the info, debug, error, exception logs and save the logs upto some days periodically
+                        As of now I have used the stremlit write method to display logs
+                    </p>
+                </li>
+                <li>Integrating cloud storage like S3 bucket to save and load huge processed and unprocessed data into pipeline</li>
+                <li>Integration of ML model deployment platform </li>
+                <li>Integration of alert and monitoring system like watchdog to monitor cpu usage, memory consumption and abrupt faliure or spikes</li>
+                <li><p>Also, I would like to add early stopping of pipeline if possible by setting up configuration in cofig.json and intructing the pipeline.py script as per thet config.
+                    This will give more control over the whole piepline process</p></li>
+                <li>
+                    <p>
+                           So there was a ask about how much time I spent on this. Roughly, I have spent 3 days from the day of receiving and each day I have given around 3.5 hrs.
+                           <br />
+                           My most of the time was utilized on EDA notebook liek 50% of the time as data exploration is the key part for any model
+                           Then, I did 10% of the time in project structuring and remaining I have used in pipeline design and all completing all components including html file too.
+                           This is rough estimation as through out the day I was thinking only about how to make this work propely. 
+                           I found this project intresting. 
+
+                    </p>
+                </li>    
+            </ul>
+            
+        </p>
+    
+    <hr />
+    <hr />
+    <h2>Conclusion</h2>
+    <p>
+        This document outlines the operation of a comprehensive machine learning pipeline for predicting loan risks. 
+        The documentation ensures that the pipeline can be easily understood and maintained.
+        The pipeline or any software devlopement is always an ongoing process which will need enhancement always
+        This is a very basic work done by me. 
+        Hopefully to hear constructive feedback from the team.
+        Thank you 
+    </p>
+    
+</body>
+</html>
+

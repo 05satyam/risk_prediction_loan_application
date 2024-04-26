@@ -4,3 +4,9 @@ scikit-learn
 lightgbm 
 matplotlib 
 seaborn
+imblearn
+pdpbox
+python-dotenv
+joblib
+lightgbm
+json

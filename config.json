@@ -1,0 +1,4 @@
+{
+    "columns_to_drop": ["loanId", "anon_ssn"],
+    "target_column": "loan_application_status"
+}
