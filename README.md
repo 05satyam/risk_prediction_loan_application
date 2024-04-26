@@ -1,6 +1,7 @@
 # Risk Prediction for customer loan application
 
 ## Project Structure
+```
 project_root/
 │
 ├── src/
@@ -38,7 +39,7 @@ project_root/
 └── project_output_images/
             ├── 1.png, 2.png, 3.png, 4.png
 
-
+```
 # Steps to run the project
  - brew install libomp {install as per your operating system- i was using macos}
  -  To run the application 
